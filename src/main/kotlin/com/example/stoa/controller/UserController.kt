@@ -28,7 +28,7 @@ class UserController(
     @PostMapping("/register")
     fun registerUser(@Valid @RequestBody request: RegisterRequest): ResponseEntity<Void> {
         if (userService.existsByEmail(request.email)) {
-            throw ResponseStatusException(HttpStatus.CONFLICT, "User email already exists")
+            throw ResponseStatusException(HttpStatus.CONFLICT, "An account with this email already exists")
         }
         val appUser = request.toAppUser(passwordEncoder)
         userService.create(appUser)
