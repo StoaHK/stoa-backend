@@ -1,0 +1,2 @@
+GET http://{{endpoint}}/api/auth/logout
+Authorization: Bearer {{token}}

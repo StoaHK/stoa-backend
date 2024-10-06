@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=stoa_db'
+      - 'POSTGRES_PASSWORD=stoa_password'
+      - 'POSTGRES_USER=stoa_user'
+    ports:
+      - '5432:5432'
+  redis:
+    image: 'redis:latest'
+    ports:
+      - '6379:6379'

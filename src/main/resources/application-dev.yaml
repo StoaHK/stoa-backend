@@ -1,0 +1,44 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  docker:
+    compose:
+      enabled: true
+      file: ./compose.yaml
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/stoa_db
+    username: stoa_user
+    password: stoa_password
+    hikari:
+      auto-commit: true
+
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  devtools:
+    livereload:
+      enabled: true
+
+jwt:
+  secret: /11+4Vlo6O1WX0OsrSjbs1yj3AfLe2GivKsX4UjXuNg=
+  access-token-expiration: 2592000000
+
+logging:
+  level:
+    root: INFO
+    net.nexhash.chargeflow: DEBUG
+    org:
+      springframework:
+        validation: DEBUG
