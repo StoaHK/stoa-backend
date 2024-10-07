@@ -6,36 +6,51 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 @Service
-class TokenService(private val redisTemplate: RedisTemplate<String, String>) {
+class TokenService(
+    private val redisTemplate: RedisTemplate<String, String>
+) {
+    companion object {
+        private const val TOKEN_PREFIX = "token:"
+        private const val USER_PREFIX = "user:"
+    }
+
     fun generateTokenId(): String = UUID.randomUUID().toString()
 
-    fun saveTokenMapping(tokenId: String, userId: Long, expirationTime: Long) {
-        redisTemplate.opsForSet().add(userId.toString(), tokenId)
-        redisTemplate.opsForValue().set(tokenId, userId.toString(), expirationTime, TimeUnit.MILLISECONDS)
+    fun saveTokenMapping(tokenId: String, userId: Long, expirationMillis: Long) {
+        val tokenKey = "${TOKEN_PREFIX}$tokenId"
+        val userKey = "${USER_PREFIX}$userId"
+
+        redisTemplate.opsForValue().set(tokenKey, userId.toString(), expirationMillis, TimeUnit.MILLISECONDS)
+        redisTemplate.opsForSet().add(userKey, tokenId)
     }
 
     fun getUserIdByTokenId(tokenId: String): Long? {
-        val userIdStr = redisTemplate.opsForValue().get(tokenId)
-        return userIdStr?.toLongOrNull()
+        val userIdStr = redisTemplate.opsForValue().get("${TOKEN_PREFIX}$tokenId") ?: return null
+        return userIdStr.toLongOrNull()
     }
 
     fun removeTokenMapping(tokenId: String) {
-        val userId = getUserIdByTokenId(tokenId)
-        if (userId != null) {
-            val userTokensKey = userId.toString()
-            redisTemplate.opsForSet().remove(userTokensKey, tokenId)
-        }
-        redisTemplate.delete(tokenId)
+        val userId = getUserIdByTokenId(tokenId) ?: return
+        val tokenKey = "${TOKEN_PREFIX}$tokenId"
+        val userKey = "${USER_PREFIX}$userId"
+
+        redisTemplate.delete(tokenKey)
+        redisTemplate.opsForSet().remove(userKey, tokenId)
     }
 
     fun removeAllUserTokens(userId: Long) {
-        val userTokensKey = userId.toString()
-        val tokens = redisTemplate.opsForSet().members(userTokensKey) ?: return
+        val userKey = "${USER_PREFIX}$userId"
 
-        tokens.forEach { token ->
-            redisTemplate.delete(token)
+        val tokenIds = redisTemplate.opsForSet().members(userKey) ?: return
+
+        tokenIds.forEach { tokenId ->
+            redisTemplate.delete("${TOKEN_PREFIX}$tokenId")
         }
 
-        redisTemplate.delete(userTokensKey)
+        redisTemplate.delete(userKey)
+    }
+
+    fun isTokenValid(tokenId: String): Boolean {
+        return redisTemplate.hasKey("${TOKEN_PREFIX}$tokenId")
     }
 }

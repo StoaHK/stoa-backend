@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 
 **/*.private.env.json
+src/**/venv/
 
 ### STS ###
 .apt_generated

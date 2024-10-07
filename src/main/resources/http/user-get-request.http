@@ -1,2 +1,0 @@
-GET http://{{endpoint}}/api/users/me
-Authorization: Bearer {{token}}

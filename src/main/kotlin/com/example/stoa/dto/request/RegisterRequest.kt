@@ -7,17 +7,17 @@ import jakarta.validation.constraints.Size
 import org.springframework.security.crypto.password.PasswordEncoder
 
 data class RegisterRequest(
-    @field:NotBlank(message = "Username is required")
-    @field:Size(min = 2, max = 20, message = "Username must be between 2 and 20 characters long")
+    @field:NotBlank(message = "{username.notblank}")
+    @field:Size(min = 2, max = 20, message = "{username.size}")
     val username: String,
 
-    @field:NotBlank(message = "Email is required")
-    @field:Size(min = 3, max = 150, message = "Email must be between 3 and 150 characters long")
-    @field:Email(message = "Please provide a valid email address")
+    @field:NotBlank(message = "{email.notblank}")
+    @field:Size(min = 3, max = 150, message = "{email.size}")
+    @field:Email(message = "{email.invalid}")
     val email: String,
 
-    @field:NotBlank(message = "Password is required")
-    @field:Size(min = 6, max = 72, message = "Password must be between 6 and 72 characters long")
+    @field:NotBlank(message = "{password.notblank}")
+    @field:Size(min = 6, max = 72, message = "{password.size}")
     val password: String
 ) {
     fun toAppUser(passwordEncoder: PasswordEncoder): User {

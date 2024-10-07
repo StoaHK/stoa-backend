@@ -4,6 +4,7 @@ import com.example.stoa.model.User
 import com.example.stoa.repository.UserRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(

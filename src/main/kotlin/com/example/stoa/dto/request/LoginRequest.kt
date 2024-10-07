@@ -5,12 +5,12 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 
 data class LoginRequest(
-    @field:NotBlank(message = "Email cannot be empty")
-    @field:Size(message = "Email must between 3 to 150 characters", min = 3, max = 150)
-    @field:Email(message = "Email is not valid")
+    @field:NotBlank(message = "{email.notblank}")
+    @field:Size(min = 3, max = 150, message = "{email.size}")
+    @field:Email(message = "{email.invalid}")
     val email: String,
 
-    @field:NotBlank(message = "Email cannot be empty")
-    @field:Size(message = "Password must between 6 to 72 characters", min = 6, max = 72)
+    @field:NotBlank(message = "{password.notblank}")
+    @field:Size(min = 6, max = 72, message = "{password.size}")
     val password: String
 )
