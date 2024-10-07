@@ -30,9 +30,9 @@ class AuthController(
     @PostMapping("/login")
     fun login(@Valid @RequestBody request: LoginRequest): ResponseEntity<AuthResponse> {
         val user = userService.findByEmail(request.email)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid email or password")
+            ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password")
         if (!passwordEncoder.matches(request.password, user.password))
-            throw ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid email or password")
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password")
         val jwtToken = jwtService.generate(user)
         return ResponseEntity.ok(AuthResponse(jwtToken))
     }
